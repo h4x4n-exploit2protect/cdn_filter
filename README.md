@@ -1,93 +1,107 @@
+Exploit2Protect CDN Filter
 
-# Exploit2Protect CDN & Historical DNS IP Analyzer
+CDN & Historical DNS IP Analyzer
 
-**Turning Attacks into Defense**
+Turning Attacks into Defense
 
-A Python tool for categorizing IP addresses collected from historical DNS records and authorized asset inventories.
+A lightweight Python tool that analyzes historical DNS IP addresses and categorizes them using published CDN/cloud IP ranges and reverse DNS (PTR) hints.
 
-## Features
+Repository: "h4x4n-exploit2protect/cdn_filter" (https://github.com/h4x4n-exploit2protect/cdn_filter)
 
-- Detects IP addresses in text, CSV, and TSV files
-- Checks published Cloudflare IPv4 and IPv6 ranges
-- Checks Fastly public IP ranges
-- Checks AWS CloudFront and Global Accelerator ranges
-- Identifies AWS and Google Cloud hosting ranges
-- Optionally checks reverse DNS (PTR) hints
-- Generates separate output files for each category
-- Uses Python's standard library only
+Features
 
-## Requirements
+- IPv4 and IPv6 extraction from text-based input files
+- Cloudflare published IP range detection
+- Fastly public IP range detection
+- AWS CloudFront and Global Accelerator classification
+- AWS cloud-hosting IP range classification
+- Google Cloud IP range classification
+- Optional reverse DNS (PTR) analysis
+- CDN-related and cloud-hosting hostname hints
+- Categorized output files
+- Combined TSV report
+- Python standard library only; no third-party dependencies
 
-- Python 3.9 or later
-- Internet access to retrieve provider IP range feeds
-- Optional DNS access for reverse-DNS lookups
+Requirements
 
-No third-party Python packages are required.
+- Python 3.9+
+- Internet connectivity to download provider IP range feeds
+- DNS connectivity for reverse DNS lookups
 
-## Installation
+Installation
 
-```bash
-git clone https://github.com/YOUR_USERNAME/exploit2protect-cdn-analyzer.git
-cd exploit2protect-cdn-analyzer
+git clone https://github.com/h4x4n-exploit2protect/cdn_filter.git
+cd cdn_filter
 chmod +x cdn_filter.py
-```
 
-## Usage
+Usage
 
-Analyze a historical IP list:
+Basic scan
 
-```bash
 python3 cdn_filter.py -iL historical-ips.txt
-```
 
-Specify a custom output prefix:
+Specify an output prefix
 
-```bash
 python3 cdn_filter.py -iL historical-ips.txt -o results/analysis
-```
 
-Skip reverse-DNS lookups:
+Skip reverse DNS lookups
 
-```bash
 python3 cdn_filter.py -iL historical-ips.txt -o results/analysis --no-ptr
-```
 
-## Output Files
+Example with historical DNS IPs
 
-| File | Description |
-|---|---|
-| `*-all.tsv` | Combined results with classification details |
-| `*-known-cdn.txt` | IPs matching known CDN or edge ranges |
-| `*-cdn-hints.txt` | IPs with CDN-related PTR hints |
-| `*-cloud-hosting.txt` | IPs matching cloud-hosting ranges or PTR hints |
-| `*-unclassified.txt` | IPs not matched by the available checks |
-| `*-invalid.txt` | Input lines without a recognized IP address |
+python3 cdn_filter.py -iL orgin1.txt-candidates.txt -o results/origin-analysis
 
-## How Classification Works
+Replace the input filename with your own authorized asset inventory.
 
-1. Extracts unique IPv4 and IPv6 addresses from the input.
+Output Files
+
+File| Description
+"*-all.tsv"| Complete classification report
+"*-known-cdn.txt"| IPs matching known CDN or edge-related ranges
+"*-cdn-hints.txt"| IPs with CDN-related PTR hints
+"*-cloud-hosting.txt"| IPs matching cloud-hosting ranges or PTR hints
+"*-unclassified.txt"| IPs not matched by available checks
+"*-invalid.txt"| Input lines without a recognized IP address
+
+Classification Methodology
+
+1. Reads the input file and extracts unique IPv4 and IPv6 addresses.
 2. Downloads publicly available provider IP range feeds.
-3. Compares each address against the loaded ranges.
-4. Optionally checks reverse DNS when no range matches.
-5. Saves the categorized results to files.
+3. Compares addresses against known provider ranges.
+4. Optionally performs reverse DNS lookups.
+5. Categorizes the addresses and generates reports.
 
-## Limitations
+Understanding the Results
 
-- An unclassified IP is **not necessarily an origin server**.
-- Cloud-hosting IPs can serve legitimate origin servers, proxies, load balancers, or other services.
-- CDN providers may not publish every relevant range.
-- PTR records can be missing, generic, or outdated.
-- A CDN range match does not prove that a particular hostname uses that provider.
-- Provider feeds can be unavailable or change over time.
-- This tool does not attempt to bypass a CDN, WAF, firewall, or access control.
+Known CDN: The IP matches a published CDN or edge-related network range.
 
-Use the results as preliminary intelligence and verify findings independently.
+CDN Hints: The IP did not match a loaded provider range but its PTR hostname contains a recognized CDN-related keyword.
 
-## Responsible Use
+Cloud Hosting: The IP matches a recognized cloud-hosting range or a cloud-related PTR hint.
 
-Use this tool only for assets you own or are authorized to assess. Follow the applicable scope, rules of engagement, and disclosure policies.
+Unclassified: The available checks did not identify a recognized provider range or PTR hint.
 
-## Author
+«Important: An unclassified IP is not necessarily an origin server. It may belong to an unrecognized CDN, WAF, proxy, load balancer, hosting provider, or other infrastructure. All findings require independent verification.»
 
-**Exploit2Protect**  
-*Turning Attacks into Defense*
+Limitations
+
+- Provider feeds may be unavailable or incomplete.
+- Only configured providers and published ranges are checked.
+- Reverse DNS records can be missing, generic, or outdated.
+- Cloud-hosting IPs may serve origins, proxies, or intermediary services.
+- A range match does not prove that a particular hostname uses that provider.
+- The tool does not bypass CDNs, WAFs, firewalls, or access controls.
+- Results are preliminary indicators, not proof of origin infrastructure.
+
+Responsible Use
+
+Use this tool only on assets you own or are explicitly authorized to assess. Follow the applicable scope, rules of engagement, and responsible disclosure policies.
+
+Author
+
+Exploit2Protect
+
+Turning Attacks into Defense
+
+GitHub: "h4x4n-exploit2protect/cdn_filter" (https://github.com/h4x4n-exploit2protect/cdn_filter)
